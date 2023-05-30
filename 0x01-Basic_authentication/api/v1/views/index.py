@@ -32,3 +32,11 @@ def unauthorized_route() -> None:
     Raise 401 error
     """
     abort(401)
+
+
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbidden_route():
+    """ GET /api/v1/forbidden
+    Raise 403 error
+    """
+    abort(403)
