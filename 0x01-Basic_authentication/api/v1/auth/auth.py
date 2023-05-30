@@ -28,4 +28,3 @@ class Auth:
         Retrieves the current user based on the request
         """
         return None
-
