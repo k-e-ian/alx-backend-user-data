@@ -16,10 +16,10 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
 auth_type = os.getenv("AUTH_TYPE")
-if auth_type == "basic_auth":
-    auth = BasicAuth()
+if auth_type == "session_auth":
+    auth = SessionAuth()
 else:
-    auth = Auth()
+    auth = BasicAuth()
 
 
 @app.before_request
@@ -34,9 +34,9 @@ def before_request():
     if not auth.require_auth(request.path, excluded_paths):
         return
     if auth.authorization_header(request) is None:
-            abort(401)
+        abort(401)
     if auth.current_user(request) is None:
-            abort(403)
+        abort(403)
     request.current_user = auth.current_user(request)
 
 
