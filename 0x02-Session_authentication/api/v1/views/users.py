@@ -121,13 +121,17 @@ def update_user(user_id: str = None) -> str:
     user.save()
     return jsonify(user.to_json()), 200
 
+
 @app_views.route("/<user_id>", methods=["GET"], strict_slashes=False)
 def user_get(user_id):
     """Retrieves a User"""
-    if user_id == "me" and request.current_user is None:
-        abort(404)
-    elif user_id == "me" and request.current_user is not None:
+    if user_id == "me":
+        if request.current_user is None:
+            abort(404)
         return jsonify(request.current_user.to_dict()), 200
     else:
-        return user_get(user_id)
-
+        try:
+            user = User.get(user_id)
+        except Exception:
+            abort(404)
+        return jsonify(user.to_dict()), 200
