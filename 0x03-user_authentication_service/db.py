@@ -32,15 +32,7 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """Add a user to the database
-
-        Args:
-            email (str): User's email
-            hashed_password (str): User's hashed password
-
-        Returns:
-            User: User object
-        """
+        """Add a user to the database"""
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
@@ -48,15 +40,15 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
-        """Find a user in the database based on the given filters
-        """
+        """Find a user in the database based on the given filters"""
         try:
-            user = self._session.query(User).filter_by(**kwargs).first()
+            query = self._session.query(User).filter_by(**kwargs)
+            user = query.first()
             if user is None:
-                raise NoResultFound("No user found with the given filters")
+                raise NoResultFound("No user found")
             return user
-        except InvalidRequestError as e:
-            raise InvalidRequestError("Wrong query arguments") from e
+        except InvalidRequestError:
+            raise InvalidRequestError("Invalid query arguments")
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """locate the user to update, then will update the user’s attributes
