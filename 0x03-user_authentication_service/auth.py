@@ -18,7 +18,7 @@ class Auth:
         """
         takes mandatory email and pass str args and return a User object."""
         try:
-            self._db.find_user_by(email=email)
+            existing_user = self._db.find_user_by(email=email)
             raise ValueError("User {} already exists".format(email))
         except NoResultFound:
             hashed_password = self._db._hash_password(password)
