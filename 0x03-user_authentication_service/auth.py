@@ -5,6 +5,7 @@ File: auth.py
 import bcrypt
 from db import DB
 from user import User
+import uuid
 
 
 def _hash_password(password: str) -> bytes:
@@ -60,3 +61,12 @@ class Auth:
         """
         Generate a new UUID"""
         return str(uuid.uuid4())
+
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """
+        Retrieve the user corresponding to the provided session ID."""
+        if session_id is None:
+            return None
+
+        user = self._db.get_user_by_session_id(session_id)
+        return user if user else None
