@@ -70,3 +70,32 @@ class Auth:
 
         user = self._db.get_user_by_session_id(session_id)
         return user if user else None
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Destroy the sess user with given user_id by setting the sess ID to Non
+        """
+        user = self._db.find_user_by_id(user_id)
+        if user:
+            user.session_id = None
+            self._db.update_user(user)
+
+    def get_reset_password_token(self, email: str) -> str:
+        """get reset password token"""
+        user = self.get_user_by_email(email)
+        if not user:
+            raise ValueError("User not found")
+
+        reset_token = str(uuid.uuid4())
+        self.update_user_reset_token(user, reset_token)
+        return reset_token
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """update password"""
+        user = self._db.find_user_by('reset_token', reset_token)
+        if user is None:
+            raise ValueError("Invalid reset token")
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'),
+                                        bcrypt.gensalt())
+        user.update({'hashed_password': hashed_password, 'reset_token': None})
