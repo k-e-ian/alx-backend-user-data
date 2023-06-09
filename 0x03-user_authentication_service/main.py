@@ -100,7 +100,9 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     Update the password for the user with the given email using the provided
     """
     url = BASE_URL + "/update_password"
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {"email": email,
+            "reset_token": reset_token,
+            "new_password": new_password}
     response = requests.put(url, data=data)
     assert response.status_code == 200
     payload = response.json()
